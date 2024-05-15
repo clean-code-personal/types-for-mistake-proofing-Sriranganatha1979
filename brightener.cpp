@@ -22,13 +22,6 @@ shared_ptr<Image> BrightenWholeImage(shared_ptr<Image> inputImage, int& attenuat
                 inputImage->scanPixels([inputImage, &attenuatedPixelCount, initPixels](uint8_t inputPixel, uint16_t rows, uint16_t col, uint16_t index) {
                     initPixels[index] = brightenPixel(inputPixel, 25, attenuatedPixelCount);
                     });
-            //for (int x = 0; x < inputImage->m_rows; x++) {
-            //    for (int y = 0; y < inputImage->m_columns; y++) {
-            //        int index = inputImage->pixelIndex(x, y);
-            //        initPixels[index] =
-            //            brightenPixel(inputImage->getPixelAtIndex(x, y), 25, attenuatedPixelCount);
-            //    }
-            //}
         });
     return brightenedImage;
 }
@@ -46,15 +39,6 @@ shared_ptr<Image> AddBrighteningImage(shared_ptr<Image> inputImage, shared_ptr<I
                 inputImage->scanPixels([inputImage, imageToAdd, &attenuatedPixelCount, initPixels](uint8_t inputPixel, uint16_t rows, uint16_t col, uint16_t index) {
                     initPixels[index] = brightenPixel(inputPixel, imageToAdd->getPixelAtIndex(rows, col), attenuatedPixelCount);
                     });
-
-
-            //for (int x = 0; x < inputImage->m_rows; x++) {
-            //    for (int y = 0; y < inputImage->m_columns; y++) {
-            //        int index = inputImage->pixelIndex(x, y);
-            //        initPixels[index] =
-            //            brightenPixel(inputImage->getPixelAtIndex(x, y), imageToAdd->getPixelAtIndex(x, y), attenuatedPixelCount);
-            //    }
-            //}
     });
     return brightenedImage;
 }

@@ -13,8 +13,8 @@ int main() {
 	std::cout << "Brightening a 512 x 512 image\n";
 	int attenuatedPixelCount = 0;
 	try {
-		auto brightenedImage = BrightenWholeImage(rawimage, attenuatedPixelCount);
-		std::cout << "Attenuated " << attenuatedPixelCount << " pixels\n";
+		auto brightenedImage = BrightenWholeImage(rawimage);
+		std::cout << "Attenuated " << brightenedImage->m_attenuatedPixelCount << " pixels\n";
 	}
 	catch (std::invalid_argument ex)
 	{

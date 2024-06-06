@@ -12,34 +12,35 @@ uint8_t brightenPixel(uint8_t inputPixel, uint8_t brighteningGrayscale, int& att
     return brightened;
 }
 
-shared_ptr<Image> BrightenWholeImage(shared_ptr<Image> inputImage, int& attenuatedPixelCount) {
+shared_ptr<BrightenedImage> BrightenWholeImage(shared_ptr<RawImage> rawInputImage, int& attenuatedPixelCount) {
+    auto inputImage = rawInputImage->m_internalImage;
     // For brightening, we add a certain grayscale (25) to every pixel.
     // While brightening, some pixels may cross the max brightness. They are
     // called 'attenuated' pixels
-    auto brightenedImage = 
+    auto brightenedImage = std::make_shared<BrightenedImage>(
         make_shared<Image>(inputImage->m_rows, inputImage->m_columns,
             [inputImage, &attenuatedPixelCount](uint8_t* initPixels) {
                 inputImage->scanPixels([inputImage, &attenuatedPixelCount, initPixels](uint8_t inputPixel, uint16_t rows, uint16_t col, uint16_t index) {
                     initPixels[index] = brightenPixel(inputPixel, 25, attenuatedPixelCount);
                     });
-        });
+        }));
     return brightenedImage;
 }
 
 // Throws the exception std::invalid_argument if there is a mismatch between rows and column of inputImage and imageToAdd
-shared_ptr<Image> AddBrighteningImage(shared_ptr<Image> inputImage, shared_ptr<Image> imageToAdd,
+shared_ptr<BrightenedImage> AddBrighteningImage(shared_ptr<RawImage> rawInputImage, shared_ptr<Image> imageToAdd,
     int& attenuatedPixelCount) {
-    
+    auto inputImage = rawInputImage->m_internalImage;
      if (imageToAdd->m_rows != inputImage->m_rows || imageToAdd->m_columns != inputImage->m_columns) {
          throw std::invalid_argument("Invalid arguments received. Mismatch between rows and column of inputImage and imageToAdd.\n");
      }
-    auto brightenedImage =
+    auto brightenedImage = std::make_shared<BrightenedImage>(
         make_shared<Image>(inputImage->m_rows, inputImage->m_columns,
             [inputImage, imageToAdd, &attenuatedPixelCount](uint8_t* initPixels) {
                 inputImage->scanPixels([inputImage, imageToAdd, &attenuatedPixelCount, initPixels](uint8_t inputPixel, uint16_t rows, uint16_t col, uint16_t index) {
                     initPixels[index] = brightenPixel(inputPixel, imageToAdd->getPixelAtIndex(rows, col), attenuatedPixelCount);
                     });
-    });
+    }));
     return brightenedImage;
 }
 

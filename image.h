@@ -17,13 +17,13 @@ public:
 	bool imageSizeIsValid() {
 		return m_rows <= 1024 && m_columns <= 1024;
 	}
-	uint16_t pixelIndex(uint16_t x, uint16_t y) {
+	uint16_t pixelIndex(const uint16_t x, const uint16_t y) {
 		return x * m_columns + y;
 	}
-	uint8_t getPixelAtIndex(uint16_t x, uint16_t y) {
+	uint8_t getPixelAtIndex(const uint16_t x, const uint16_t y) {
 		return m_pixels[pixelIndex(x, y)];
 	}
-	void scanPixels(std::function<void(uint8_t, uint16_t, uint16_t, uint16_t)> takePixel) {
+	void scanPixels(std::function<void(const uint8_t, const uint16_t, const uint16_t, const uint16_t)> takePixel) {
 		for (int x = 0; x < m_rows; x++) {
 			for (int y = 0; y < m_columns; y++) {
 				takePixel(getPixelAtIndex(x, y), x, y, pixelIndex(x,y));
@@ -37,18 +37,17 @@ public:
 
 class RawImage {
 public:
-	RawImage(std::shared_ptr<Image> rawImage) {
-		m_rawImage = std::make_shared<Image>(512, 512, [](uint8_t* pixels) {});
+	RawImage(std::shared_ptr<Image> rawImage) {	
+		m_internalImage = rawImage;
 	}
-private:
-	std::shared_ptr<Image> m_rawImage;
+	std::shared_ptr<Image> m_internalImage;
 };
 
 class BrightenedImage {
 public:
 	BrightenedImage(std::shared_ptr<Image> brightenedImage) {
-		m_brightenedImage = brightenedImage;
+		m_internalImage = brightenedImage;
 	}
-private:
-	std::shared_ptr<Image> m_brightenedImage;
+	std::shared_ptr<Image> m_internalImage;
+	int m_attenuatedPixelCount = 0;
 };

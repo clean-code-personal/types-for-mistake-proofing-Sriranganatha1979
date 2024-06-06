@@ -11,7 +11,7 @@ namespace brighteningtest
 
 		TEST_METHOD(CheckForRowColumnMismatch)
 		{
-			auto image = CreateImage(45, 55, 65, 75);
+			auto image = make_shared<RawImage>(CreateImage(45, 55, 65, 75));
 			int attenuatedPixelCount = 0;
 			//auto brightenedImage = AddBrighteningImage(
 			//	image, CreateImageWithDifferentMatrixSize(0, 25, 0, 25), attenuatedPixelCount);
@@ -22,23 +22,24 @@ namespace brighteningtest
 
 		TEST_METHOD(BrightensWholeImage)
 		{
-			auto image = CreateImage(45, 55, 65, 254);
+			auto image = make_shared<RawImage>(CreateImage(45, 55, 65, 254));
 			int attenuatedPixelCount = 0;
 			auto brightenedImage = BrightenWholeImage(image, attenuatedPixelCount);
 			Assert::AreEqual(1, attenuatedPixelCount);
-			Assert::AreEqual(90, int(brightenedImage->getPixelAtIndex(1, 0)));
+			Assert::AreEqual(90, int(brightenedImage->m_internalImage->getPixelAtIndex(1, 0)));
 		}
 
 		TEST_METHOD(BrightensWithAnotherImage)
 		{
-			auto image = CreateImage(45, 55, 65, 75);
+			auto image = make_shared<RawImage>(CreateImage(45, 55, 65, 75));
 			int attenuatedPixelCount = 0;
 			auto brightenedImage = AddBrighteningImage(
 				image, CreateImage(0, 25, 0, 25), attenuatedPixelCount);
-            Assert::AreEqual(45, int(brightenedImage->getPixelAtIndex(0, 0))); // left-side pixel is unchanged
-            Assert::AreEqual(80, int(brightenedImage->getPixelAtIndex(0, 1))); // right-side pixel is brightened
+            Assert::AreEqual(45, int(brightenedImage->m_internalImage->getPixelAtIndex(0, 0))); // left-side pixel is unchanged
+            Assert::AreEqual(80, int(brightenedImage->m_internalImage->getPixelAtIndex(0, 1))); // right-side pixel is brightened
             Assert::AreEqual(0, attenuatedPixelCount);
 		}
+
 		shared_ptr<Image> CreateImage(uint8_t topLeft, uint8_t topRight, uint8_t bottomLeft, uint8_t bottomRight) {
 			return make_shared<Image>(2, 2, [=](uint8_t* pixels) {
 				pixels[0] = topLeft; pixels[1] = topRight;

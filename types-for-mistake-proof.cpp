@@ -9,10 +9,11 @@ void StoreImageAnalytics(std::shared_ptr<RawImage> rawImage) {
 
 int main() {
 	auto image = std::make_shared<Image>(512, 512, [](uint8_t* pixels) {});
+	auto rawimage = std::make_shared<RawImage>(image);
 	std::cout << "Brightening a 512 x 512 image\n";
 	int attenuatedPixelCount = 0;
 	try {
-		auto brightenedImage = BrightenWholeImage(image, attenuatedPixelCount);
+		auto brightenedImage = BrightenWholeImage(rawimage, attenuatedPixelCount);
 		std::cout << "Attenuated " << attenuatedPixelCount << " pixels\n";
 	}
 	catch (std::invalid_argument ex)
